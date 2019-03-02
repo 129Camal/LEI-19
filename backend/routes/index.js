@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jsmzml = require('js_mzml');
 var fs = require('fs')
+var matrixGen = require('../mzML/matrix.js')
 
 /* GET home page. */
 router.get('/mzml', (req, res, next) => {
@@ -18,8 +19,14 @@ router.get('/mzml', (req, res, next) => {
 
   var spectra = mzml.retrieve(options, () => {
     
+    //console.log(mzml.spectra)
+    //res.send({})
     res.send(mzml.spectra);
-  
+    console.log(mzml.spectra["1"].time)
+    matrixGen.createMatrix(mzml.spectra,( matrix ) => {
+      
+    })
+
   });
 
 })
