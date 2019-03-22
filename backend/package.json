@@ -7,19 +7,18 @@
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
     "dcraw": "^1.0.3",
     "debug": "~2.6.9",
-    "elasticsearch": "^15.4.1",
     "express": "~4.16.0",
-    "get-json": "^1.0.1",
     "http-errors": "~1.6.2",
-    "jParser": "^1.0.2",
     "jade": "~1.11.0",
     "js_mzml": "^1.1.5",
+    "matrix-js": "^1.4.0",
     "morgan": "~1.9.0",
     "pug": "^2.0.3",
-    "vfile": "^4.0.0",
-    "nodemon": "1.18.10"
+    "vfile": "^4.0.0"
   }
 }
