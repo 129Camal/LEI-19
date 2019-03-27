@@ -10,8 +10,8 @@
                 type="LineChart"
                 :data="chartData"
                 :options="chartOptions"
+                @ready = "onChartReady"
             />
-            <p>{{information}}</p>
         </div>
     </div>
 </template>
@@ -27,13 +27,7 @@ export default {
     },
     data(){
         return {
-            information: {},
-            chartData: [
-                ['Scan', 'Intensity'],
-                ['2015', 1170],
-                ['2016', 660],
-                ['2017', 1030]
-            ],
+            chartData: [],
             chartOptions: {
                 chart: {
                     title: 'Graph Sum Intensity per Scan',
@@ -41,11 +35,21 @@ export default {
             }
         }
     },
-    created(){
-        axios.get('http://127.0.0.1:3001/mzml')
-             .then(res => this.information = res.data)
+    methods: {
+        onChartReady (){
+            axios.get('http://127.0.0.1:3001/mzml')
+                .then(res => {
+                
+                this.chartData.push(['Scan', 'Intensity'])
+
+                for(let i=0; i < res.data[0].scans.length; i++){
+                    this.chartData.push([res.data[0].scans[i], res.data[0].intensity[i]])
+                }
+
+            })
             // eslint-disable-next-line
             .catch(err => console.log(err)) 
+        }
     }
 }
 

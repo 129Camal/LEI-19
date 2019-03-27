@@ -9,30 +9,15 @@ router.get('/mzml', (req, res, next) => {
   
   filename = 'mzML/mydata.mzML';
 
-  /*var example = {
-    name:'Frederico',
-    idade: 21
-  }
-  res.jsonp(example)
-  */
-
   let mzml = new jsmzml(filename);
   
   let options = {
     'level': '1',
     'rtBegin': 0,
-    'rtEnd': 1
+    'rtEnd': 9999999999
   };
 
   let spectra = mzml.retrieve(options, () => {
-    //res.jsonp(mzml.spectra)
-
-    /*var array = []
-    for(let i = 0; i <= 1000; i++){
-      array.push(i)
-    }
-    */
-
     let matrix = []
     let sumIntensity = new Array(Object.keys(mzml.spectra).length).fill(0);
     let numScans = Array.apply(null, {length: Object.keys(mzml.spectra).length}).map(Number.call, Number)
@@ -55,27 +40,15 @@ router.get('/mzml', (req, res, next) => {
       
     }
     
-    result = {
+    var output = []
+
+    var result = {
       scans: numScans,
       intensity: sumIntensity
     }
 
-    //res.setHeader('content-type', 'application/json');
-    //let json = JSON.stringify(response)
-    //console.log(json)
-    res.jsonp(result)
-    res.end()
-
-    
-    
-    /*fs.writeFile('result.json', json, (err) => {  
-    
-      if (err) throw err;
-
-      console.log('Mzml saved!');
-
-    });
-    */
+    output.push(result)
+    res.jsonp(output)
     
   });
 })
