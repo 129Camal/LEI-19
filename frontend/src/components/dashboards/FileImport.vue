@@ -36,7 +36,9 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-info btn-fill btn-wd">Import File</button>
+                        <router-link to='/dashboards'>
+                            <button v-on:click="$emit('appear-button')" type="submit" class="btn btn-info btn-fill btn-wd">Import File</button>
+                        </router-link>
                     </div>
             </form>
         </div>

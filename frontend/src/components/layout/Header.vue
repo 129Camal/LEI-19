@@ -7,7 +7,7 @@
 	-->
         <div class="sidebar-wrapper">
             <div class="logo">
-                <router-link to="/" class="simple-text">Chemical Analyzer</router-link>
+                <router-link to="/dashboards" class="simple-text">Chemical Analyzer</router-link>
             </div>
             <ul class="nav">
                 <li v-on:click="isActive=1" v-bind:class="{'active': isActive===1}">

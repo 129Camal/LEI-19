@@ -7,21 +7,16 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li>
-              <div v-show="seen">
-                <!--<button type="button" class="btn btn-outline-info">Import RAW</button>-->
-                <router-link to="/dashboards/import" tag="button" class="btn btn-outline-info">
-                  <span v-on:click="seen = !seen">Import File</span>
-                </router-link>
-              </div>
-            </li>
+            <div v-show="seen" v-on:click="seen = !seen">
+              <ImportFileButton/>
+            </div>
           </ul>
         </div>
       </div>
     </nav>
     <div class="content">
       <div class="container-fluid">
-        <router-view></router-view>
+        <router-view v-on:appear-button="seen=true"></router-view>
         <router-view name="helper"></router-view>
         <!--    <div class="row">
                     <div class="col-md-12">
@@ -39,6 +34,7 @@
 </template>
 
 <script>
+import ImportFileButton from '../components/buttons/ImportFileButton.vue'
 import FileImport from '../components/dashboards/FileImport.vue'
 import ListFiles from "../components/dashboards/ListFiles.vue";
 import TestInformation from "../components/dashboards/TestInformation.vue";
@@ -46,14 +42,16 @@ import TestInformation from "../components/dashboards/TestInformation.vue";
 export default {
   name: "dashboards",
   components: {
+    ImportFileButton,
     ListFiles,
     FileImport,
     TestInformation
   },
-  data() {
-    return {
+
+  data(){
+    return{
       seen: true
     }
-  },
+  }
 };
 </script>

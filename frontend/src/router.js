@@ -6,6 +6,7 @@ import Dashboards from './views/Dashboards.vue'
 import FileImport from './components/dashboards/FileImport.vue'
 import ListFiles from './components/dashboards/ListFiles.vue'
 import TestInformation from './components/dashboards/TestInformation.vue'
+import ImportFileButton from './components/buttons/ImportFileButton'
 
 Vue.use(Router)
 
