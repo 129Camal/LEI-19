@@ -21,12 +21,11 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-4 col-md-5" >
+          <div class="col-lg-4 col-md-5">
             <InfoUser v-on:edit-profile="swap"/>
           </div>
           <div class="col-lg-8 col-md-7">
-              <div :is="current">
-              </div>
+            <UserBar/>
           </div>
         </div>
       </div>
@@ -37,30 +36,32 @@
 <script>
 import InfoUser from "../components/user/InfoUser";
 import EditProfile from "../components/user/EditProfile";
+import UserBar from "../components/user/UserBar.vue";
 
 export default {
   name: "user",
   components: {
     InfoUser,
-    EditProfile
+    EditProfile,
+    UserBar
   },
-  data(){
-      return {
-          current: null
-    }
+  data() {
+    return {
+      current: null
+    };
   },
   methods: {
-      swap(component){
-          switch(component){
-            case 'EditProfile':
-                this.current = EditProfile;
-                break;
-            
-            case 'InfoUser':
-                this.current = InfoUser;
-                break;
-          }
+    swap(component) {
+      switch (component) {
+        case "EditProfile":
+          this.current = EditProfile;
+          break;
+
+        case "InfoUser":
+          this.current = InfoUser;
+          break;
       }
+    }
   }
 };
 </script>

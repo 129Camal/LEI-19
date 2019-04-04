@@ -18,16 +18,6 @@
       <div class="container-fluid">
         <router-view v-on:appear-button="seen=true"></router-view>
         <router-view name="helper"></router-view>
-        <!--    <div class="row">
-                    <div class="col-md-12">
-                        <ListFiles/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <TestInformation/>
-                    </div>
-        </div>-->
       </div>
     </div>
   </div>
@@ -55,3 +45,13 @@ export default {
   }
 };
 </script>
+ <!--    <div class="row">
+                    <div class="col-md-12">
+                        <ListFiles/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <TestInformation/>
+                    </div>
+        </div>-->x
