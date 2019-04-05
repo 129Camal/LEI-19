@@ -20,7 +20,13 @@ export default new Router({
     {
       path: '/user',
       name: 'user',
-      component: User
+      component: User,
+      children: [
+        {
+          path: 'datasets',
+          component: ListFiles
+        }
+      ] // acho que vai ser preciso meter merdas aqui
     },
     {
       path: '/dashboards',

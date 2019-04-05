@@ -7,10 +7,9 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
-            <li>
+            <li v-on:mouseover="isActive = !isActive" v-bind:class="{'active': isActive}">
               <a href="#">
-                <i class="ti-settings"></i>
-                <p>Settings</p>
+                <p>Logout</p>
               </a>
             </li>
           </ul>
@@ -25,7 +24,8 @@
             <InfoUser v-on:edit-profile="swap"/>
           </div>
           <div class="col-lg-8 col-md-7">
-            <UserBar/>
+            <div v-if="current === null"> <UserBar/></div>
+            <div v-else><EditProfile/></div>
           </div>
         </div>
       </div>
@@ -47,7 +47,8 @@ export default {
   },
   data() {
     return {
-      current: null
+      current: null,
+      isActive: false
     };
   },
   methods: {
@@ -56,12 +57,19 @@ export default {
         case "EditProfile":
           this.current = EditProfile;
           break;
-
-        case "InfoUser":
-          this.current = InfoUser;
-          break;
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.active a::after{
+  border-bottom: 2px solid #68b3c8;
+  bottom: 4px;
+  content: " ";
+  left: 7px;
+  position: absolute;
+  right: 7px;
+}
+</style>

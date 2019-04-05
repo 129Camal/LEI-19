@@ -1,7 +1,22 @@
 <template>
   <div class="card">
     <div class="header">
-      <h4 class="title">Edit Profile</h4>
+      <nav class="navbar navbar-default navbar-inner">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <h4 class="title navbar-brand ml-auto">Edit Profile</h4>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="nav-item ml-auto">
+                <a href="#">
+                  <button class="navbar-cancela">Cancel</button>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
     </div>
     <div class="content">
       <form>
@@ -85,3 +100,15 @@
     </div>
   </div>
 </template>
+
+
+<style scoped>
+.navbar-inner {
+  background: transparent;
+}
+
+.navbar-cancela {
+  background-color: transparent;
+  border: 0;
+}
+</style>
