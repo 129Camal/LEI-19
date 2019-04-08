@@ -1,0 +1,14 @@
+extends layout
+
+block content
+    form(action="/file/import" method="POST" enctype="multipart/form-data")
+        label
+            b Nome
+        input(type='text', name='nome')
+        label
+            b Número
+        input(type='text', name='numero')
+        label
+            b Ficheiro
+        input(type='file', name='file')
+        input(type='submit', value='Enviar')

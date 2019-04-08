@@ -2,7 +2,45 @@ var express = require('express');
 var router = express.Router();
 var jsmzml = require('js_mzml');
 var fs = require('fs')
+const multer = require('multer')
+const exec = require('child_process').exec;
 
+
+//Set storage engine
+const storage = multer.diskStorage({
+  destination: './mzML/',
+  filename: (req, file, cb) =>{
+    cb(null, file.originalname)
+  }
+})
+
+const upload = multer({
+  storage: storage
+}).array('file', 100)
+
+router.get('/', (req, res) =>{
+  res.render('file')
+})
+
+router.post('/import', (req, res) => {
+  upload(req, res, (errupl) =>{
+    if(!errupl){
+      let testscript = exec('docker run --rm -e WINEDEBUG=-all -v /Users/fredericopinto/Documents/LEI-19/backend/mzML:/mzML/ rawconverter wine msconvert ')// + req.files[0].originalname);
+    
+      testscript.stderr.on('data', function(data){
+        console.log("ERRO NA CONVERSÃO DO FICHEIRO");
+      });
+
+      //testscript.on('close', (data) => {
+      //  console.log("Conversão efetuada com sucesso!");
+      //});
+    } else {
+      console.log(errupl)
+    }
+  })
+  console.log(req.body)
+  res.redirect('/file')
+})
 
 /* GET home page. */
 router.get('/mzml', (req, res, next) => {
