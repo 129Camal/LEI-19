@@ -7,22 +7,22 @@
 	-->
         <div class="sidebar-wrapper">
             <div class="logo">
-                <router-link to="/" class="simple-text">Chemical Analyzer</router-link>
+                <router-link to="/dashboards" class="simple-text">Chemical Analyzer</router-link>
             </div>
             <ul class="nav">
-                <li class="active">
+                <li v-on:click="isActive=1" v-bind:class="{'active': isActive===1}">
                     <router-link to="/dashboards">
                         <i class="ti-panel"></i>
                         <p>Dashboards</p>
                     </router-link>
                 </li>
-                <li>
+                <li v-on:click="isActive=2" v-bind:class="{'active': isActive===2}">
                     <router-link to="/groups">
                         <i class="ti-layout-grid3"></i>
                         <p>Work Groups</p>
                     </router-link>            
                 </li>
-                <li>    
+                <li v-on:click="isActive=3" v-bind:class="{'active': isActive===3}">    
                     <router-link to="/user">
                         <i class="ti-user"></i>
                         <p>User Profile</p>
@@ -35,6 +35,12 @@
 
 <script>
 export default {
-    name: "Header"
+    name: "Header",
+    data() {
+        return {
+            isActive: 1
+        }
+    }
+
 }
 </script>
