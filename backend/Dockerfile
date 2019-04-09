@@ -1,0 +1,1 @@
+FROM chambm/pwiz-skyline-i-agree-to-the-vendor-licenses
