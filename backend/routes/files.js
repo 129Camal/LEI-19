@@ -19,7 +19,8 @@ function getContent(filename, callback){
     'rtEnd': 9999999999
   };
 
-  let spectra = mzml.retrieve(options, () => {
+  mzml.retrieve(options, () => {
+    
     let matrix = []
     let sumIntensity = new Array(Object.keys(mzml.spectra).length).fill(0);
     let numScans = Array.apply(null, {length: Object.keys(mzml.spectra).length}).map(Number.call, Number)
@@ -27,9 +28,9 @@ function getContent(filename, callback){
     let header = Array.apply(null, {length: 1000}).map(Number.call, Number)
     
     
-    matrix[0] = Array.apply(null, {length: 1000}).map(Number.call, Number)
+    //matrix[0] = Array.apply(null, {length: 1000}).map(Number.call, Number)
     for(let i = 0; i < Object.keys(mzml.spectra).length; i++){
-      matrix[i+1] = new Array(1000).fill(0);
+      matrix[i] = new Array(1000).fill(0);
       let key = Object.keys(mzml.spectra)[i]
   
       for(let j = 0; j< mzml.spectra[key].mass.length; j++){
@@ -37,22 +38,29 @@ function getContent(filename, callback){
         let intensity = mzml.spectra[key].intensity[j]
         
         if(intensity){
-          matrix[i+1][mass-1] = Number.parseFloat(intensity.toFixed(2))
+          matrix[i][mass-1] = Number.parseFloat(intensity.toFixed(2))
         } 
       }
-      sumIntensity[i] = parseFloat(matrix[i+1].reduce((acc, actual) => acc + actual).toFixed(2))
+      sumIntensity[i] = parseFloat(matrix[i].reduce((acc, actual) => acc + actual).toFixed(2))
     }
+
+    var response = "ERROR CREATING CSV"
 
     let csvWriter = createCsvWriter({
       header: header,
       path: './csv/' + filename + '.csv'
     })
     
-    csvWriter.writeRecords(matrix)       // returns a promise
+    csvWriter.writeRecords(matrix)
       .then(() => {
-        console.log('File Saved!');
+        response = "OK"
+        callback({status: response})
+      })
+      .catch(err => {
+        callback({status: response})
       });
-
+    
+    /*
     var output = []
 
     var result = {
@@ -60,7 +68,7 @@ function getContent(filename, callback){
       intensity: sumIntensity
     }
     output.push(result)
-    callback(output)
+    */
   });
 }
 
@@ -88,7 +96,7 @@ router.post('/import', (req, res) => {
       
       if(fileRaw.split('.')[1] != "RAW"){ 
         exec('rm ' + __dirname + '/../RAW/' + file);
-        res.send({error: "FILE TYPE ERROR"}) 
+        res.send({status: "FILE TYPE ERROR"}) 
       }
       
       else { 
@@ -99,7 +107,7 @@ router.post('/import', (req, res) => {
           error = 1
           exec('rm ' + __dirname + '/../RAW/' + fileRaw);
           exec('rm ' + __dirname + '/../RAW/' + fileMzml);
-          res.send({error: "ERROR CONVERTING THE FILE"})
+          res.send({status: "ERROR CONVERTING THE FILE"})
         });
 
         testscript.on('exit', () => {
