@@ -7,6 +7,23 @@ var Regex = require("regex");
 const exec = require('child_process').exec;
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
+//Set storage engine
+const storage = multer.diskStorage({
+  destination: './RAW/',
+  filename: (req, file, cb) =>{
+    cb(null, file.originalname)
+  }
+})
+
+const upload = multer({
+  storage: storage
+}).array('file', 100)
+
+router.get('/', (req, res) =>{
+  res.render('file')
+})
+
+
 function getContent(filename, callback){
     
   file = 'RAW/' + filename + '.mzML' ;
@@ -72,21 +89,12 @@ function getContent(filename, callback){
   });
 }
 
-//Set storage engine
-const storage = multer.diskStorage({
-  destination: './RAW/',
-  filename: (req, file, cb) =>{
-    cb(null, file.originalname)
-  }
-})
-
-const upload = multer({
-  storage: storage
-}).array('file', 100)
+//---------------------------------------  Routes -------------------------------------------//
 
 router.get('/', (req, res) =>{
   res.render('file')
 })
+
 
 router.post('/import', (req, res) => {
    upload(req, res, (errupl) =>{
@@ -95,7 +103,7 @@ router.post('/import', (req, res) => {
       let fileMzml = fileRaw.split('.')[0] + '.mzML'
       
       if(fileRaw.split('.')[1] != "RAW"){ 
-        exec('rm ' + __dirname + '/../RAW/' + file);
+        exec('rm ' + __dirname + '/../RAW/' + fileRaw);
         res.send({status: "FILE TYPE ERROR"}) 
       }
       
@@ -125,36 +133,18 @@ router.post('/import', (req, res) => {
   })
 })
 
-router.get('/getfile', (req, res, next) => {
-  fs.readFile('result.json', (data, err) =>{
-    if(!err){
-      let json = JSON.parse(data)
-      res.write(json)
-      
+router.get('/:id', (req, res) =>{
+
+  fs.readFile(__dirname + "/../csv/" + req.params.id + '.csv', (error, data) =>{
+    if(!error){
+      res.setHeader('Content-disposition', 'attachment; filename='+ req.params.id +'.csv');
+      res.set('Content-Type', 'text/csv');
+      res.status(200).send(data)
     } else {
-      res.write(err)
+      res.send({status: "ERROR FILE NOT FOUND"})
     }
-    res.end()
+
   })
-})
-
-router.get('/mzmlweb', (req, res, next) => {
-  
-  filename = 'mzML/mydata.mzML';
-
-  var mzml = new jsmzml(filename);
-  
-  var options = {
-    'level': '1',
-    'rtBegin': 0,
-    'rtEnd': 1
-  };
-
-  var spectra = mzml.retrieve(options, () => {
-    
-    res.send(mzml.spectra)
-    
-  });
 })
 
 
