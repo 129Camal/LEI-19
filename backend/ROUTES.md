@@ -19,3 +19,6 @@
   * Get the info for presenting the graphic of Intensity Per Scan. :id = Object ID of the file on MongoDB;
   * **Ex:** localhost:3001/file/graph/sumIntensity?file=5cb3c8e5f4c83116500372e6
 * *GET* localhost:3001/file/graph/sumMass?file=:id
+  * Get the info for presenting the graphic of Intensity Per Mass. :id = Object ID of the file on MongoDB;
+  * **Ex:** localhost:3001/file/graph/sumMass?file=5cb3c8e5f4c83116500372e6
+
