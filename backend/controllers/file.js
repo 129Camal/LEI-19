@@ -2,7 +2,7 @@ var File = require('../models/file')
 
 module.exports.allFiles = ()=>{
     return File
-        .find()
+        .find({},{sumIntensities:0, sumIntensitiesPerMass:0})
         .exec()
 }
 
@@ -11,21 +11,21 @@ module.exports.addFile = file =>{
 }
 
 
-module.exports.getIntMass = name =>{
+module.exports.getIntMass = id =>{
     return File
-        .find({name: name},{_id:0, sumIntensitiesPerMass:1})
+        .find({_id: id},{_id:0, sumIntensitiesPerMass:1})
         .exec()
 }
 
-module.exports.getSumIntensity = name =>{
+module.exports.getSumIntensity = id =>{
     return File
-        .find({name: name},{_id:0, sumIntensities:1, nScans:1})
+        .find({_id: id},{_id:0, sumIntensities:1, nScans:1})
         .exec()
 }
 
-module.exports.getInfoFile = name =>{
+module.exports.getInfoFile = id =>{
     return File
-        .find({name: name},{sumIntensities:0, sumIntensitiesPerMass:0})
+        .find({_id: id},{sumIntensities:0, sumIntensitiesPerMass:0})
         .exec()
 }
 

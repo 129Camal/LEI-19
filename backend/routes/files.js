@@ -21,11 +21,6 @@ const upload = multer({
   storage: storage
 }).array('file', 100)
 
-router.get('/', (req, res) =>{
-  res.render('file')
-})
-
-
 function getContent(filename, req, callback){
   
   file = 'RAW/' + filename + '.mzML' ;
@@ -129,7 +124,7 @@ router.get('/graph/sumMass', (req, res)=>{
 
 router.get('/graph/sumIntensity', (req, res)=>{
   var file = url.parse(req.url, true).query.file
-
+  console.log(file)
   File.getSumIntensity(file)
       .then(resp => {
         let sum = resp[0].sumIntensities
@@ -143,15 +138,11 @@ router.get('/graph/sumIntensity', (req, res)=>{
 
 router.get('/info', (req, res)=>{
   var file = url.parse(req.url, true).query.file
-  
   File.getInfoFile(file)
-      .then(resp => {
-        res.status(200).jsonp(resp)
-      })
-      .catch( err => {
-        console.log(err)
-        res.status(404).jsonp({status:"FILE NOT AVAILABLE"})
-      })
+    .then(resp => {
+      res.status(200).jsonp(resp)
+    })
+    .catch( err => res.status(404).jsonp({status:"FILE NOT AVAILABLE"}))
 })
 
 router.delete('/delete/:id', (req, res) => {
@@ -163,7 +154,6 @@ router.delete('/delete/:id', (req, res) => {
 router.post('/import', (req, res) => {
     upload(req, res, (errupl) =>{
       if(!errupl){
-        File.addFile(req.body)
         let fileRaw = req.files[0].originalname.replace(/(\s)+/g, '\\ ');
         let fileMzml = fileRaw.split('.')[0] + '.mzML'
       
@@ -211,6 +201,14 @@ router.get('/csv/:id', (req, res) =>{
     }
 
   })
+})
+
+router.get('/all', (req, res) => {
+  File.allFiles()
+      .then(resp => {
+        res.status(200).jsonp(resp)
+      })
+      .catch( err => res.status(404).jsonp({status:"FILES NOT AVAILABLE"}))
 })
 
 
