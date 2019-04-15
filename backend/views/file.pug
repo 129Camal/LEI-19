@@ -3,12 +3,18 @@ extends layout
 block content
     form(action="/file/import" method="POST" enctype="multipart/form-data")
         label
-            b Nome
-        input(type='text', name='nome')
+            b Descrição:
+        input(type='text', name='description')
+        br
+        br
         label
-            b Número
-        input(type='text', name='numero')
+            b Data de Execução do Exame:
+        input(type='date', name='dateTest')
+        br   
+        br  
         label
-            b Ficheiro
+            b Ficheiro:
         input(type='file', name='file')
+        br
+        br
         input(type='submit', value='Enviar')

@@ -5,11 +5,17 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
 
 var filesRouter = require('./routes/files');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+//Connection to the MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/AnaliseQuimica', {useNewUrlParser:true})
+  .then(()=> console.log("Mongo Connected!"))
+  .catch(()=>console.log("Error Connection!")) 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,12 +35,12 @@ app.use('/file', filesRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
