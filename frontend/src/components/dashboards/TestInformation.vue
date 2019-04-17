@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     onChartReady() {
-      axios
+     /* axios
         .get("http://127.0.0.1:3001/mzml")
         .then(res => {
           this.chartData.push(["Scan", "Intensity"]);
@@ -44,7 +44,7 @@ export default {
         })
         // eslint-disable-next-line
         .catch(err => console.log(err));
-    }
+    */}
   }
 };
 </script>
