@@ -34,21 +34,21 @@ export default {
       files: [
         {
           id: 1,
-          name: "Scan Placa 1",
+          name: "Scan 1",
           testDate: "21-01-1996",
           fileName: "teste1.RAW",
           importDate: "8-3-2019"
         },
         {
           id: 2,
-          name: "Scan Placa 2",
+          name: "Scan 2",
           testDate: "12-12-1998",
           fileName: "teste2.RAW",
           importDate: "10-3-2019"
         },
         {
           id: 3,
-          name: "Scan Placa 3",
+          name: "Scan 3",
           testDate: "09-08-2017",
           fileName: "teste3.RAW",
           importDate: "9-3-2020"

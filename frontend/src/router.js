@@ -41,7 +41,7 @@ export default new Router({
           path: '',
           components: {
             default: ListFiles,
-            helper: TestInformation
+            //helper: TestInformation
           },
         }
       ]
