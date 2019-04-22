@@ -89,11 +89,12 @@ export default {
             "Content-Type": "multipart/form-data"
           }
         })
-        .then(function() {
-          console.log("SUCCESS!!");
+        .then(function(res) {
+
+          console.log(res.data);
         })
-        .catch(function() {
-          console.log("FAILURE!!");
+        .catch(function(erro) {
+          console.log(erro);
         });
     }
   }
