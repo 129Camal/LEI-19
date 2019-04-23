@@ -98,13 +98,8 @@ function getContent(filename, req, callback){
 //---------------------------------------  Routes -------------------------------------------//
 
 router.get('/', verifyToken, (req, res) =>{
-  jwt.verify(req.token, publicKey, {algorithm: 'RS256'}, (err, authData)=>{
-    if(err){
-      res.sendStatus(403)
-    } else {
-      res.render('file')
-    }
-  })
+      res.status(200).render('file')
+    
 })
 
 router.get('/graph/sumMass', verifyToken, (req, res)=>{
@@ -147,8 +142,8 @@ router.get('/info', verifyToken, (req, res)=>{
 
 router.delete('/delete/:id', verifyToken, (req, res) => {
   File.deleteFile(req.params.id)
-      .then(resp => res.status(200).send({status:"OK"}))
-      .catch(err => res.status(404).send({status:"ERROR DELETING THE FILE"}))
+      .then(resp => res.status(200).jsonp({status:"OK"}))
+      .catch(err => res.status(404).jsonp({status:"ERROR DELETING THE FILE"}))
 });
 
 router.post('/import', verifyToken, (req, res) => {
@@ -159,7 +154,7 @@ router.post('/import', verifyToken, (req, res) => {
       
         if(fileRaw.split('.')[1] != "RAW"){ 
           exec('rm ' + __dirname + '/../RAW/' + fileRaw);
-          res.status(500).send({status: "FILE TYPE ERROR"}) 
+          res.status(500).jsonp({status: "FILE TYPE ERROR"}) 
        }
       
         else { 
@@ -170,7 +165,7 @@ router.post('/import', verifyToken, (req, res) => {
             error = 1
             exec('rm ' + __dirname + '/../RAW/' + fileRaw);
             exec('rm ' + __dirname + '/../RAW/' + fileMzml);
-            res.status(500).send({status: "ERROR CONVERTING THE FILE"})
+            res.status(500).jsonp({status: "ERROR CONVERTING THE FILE"})
           });
 
           testscript.on('exit', () => {

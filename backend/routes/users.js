@@ -5,7 +5,7 @@ const fs = require('fs')
 const jwt = require('jsonwebtoken')
 
 const privateKey =  fs.readFileSync('./keys/private.key', 'utf8')
-const publicKey =  fs.readFileSync('./keys/public.key', 'utf8')
+
 
 const { verifyToken } = require('../config/token');
 
@@ -32,7 +32,7 @@ router.post('/login', (req, res, next) =>{
 					} else {
 						if(isMatch){
 							
-							jwt.sign({id: user._id, LevelPermission: user.userType }, privateKey, {expiresIn: '1h', algorithm: 'RS256'}, (err, token) => {
+							jwt.sign({id: user._id, "user": user.userType }, privateKey, {expiresIn: '1h', algorithm: 'RS256'}, (err, token) => {
 								res.status(200).jsonp({status: "OK LOGGED", acessToken: token})
 							})	
 							
