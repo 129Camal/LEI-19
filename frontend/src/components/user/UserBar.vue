@@ -5,7 +5,7 @@
         <li v-on:click="isActive = 1" v-bind:class="{'active': isActive === 1}">
           <a href="#">Overview</a>
         </li>
-        <li v-on:click="isActive = 2" v-bind:class="{'active': isActive === 2}">
+        <li v-on:click="isActive = 2; getDatasets()" v-bind:class="{'active': isActive === 2}">
           <a href="#">Datasets</a>
         </li>
         <li v-on:click="isActive = 3" v-bind:class="{'active': isActive === 3}">
@@ -20,10 +20,28 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
   data(){
     return{
       isActive: 1
+    }
+  },
+  methods: {
+    getDatasets(){
+
+      const axios = require("axios");
+
+      axios
+        .get('http://localhost:3001/file/all')
+
+        .then(function() {
+          console.log("SUCCESS!!");
+          
+        })
+        .catch(function() {
+          console.log("FAILURE!!");
+        })
     }
   }
 }

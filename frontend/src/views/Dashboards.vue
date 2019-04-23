@@ -24,34 +24,21 @@
 </template>
 
 <script>
-import ImportFileButton from '../components/buttons/ImportFileButton.vue'
-import FileImport from '../components/dashboards/FileImport.vue'
+import ImportFileButton from "../components/buttons/ImportFileButton.vue";
+import FileImport from "../components/dashboards/FileImport.vue";
 import ListFiles from "../components/dashboards/ListFiles.vue";
 import TestInformation from "../components/dashboards/TestInformation.vue";
 
 export default {
   name: "dashboards",
   components: {
-    ImportFileButton,
-    ListFiles,
-    FileImport,
-    TestInformation
+    ImportFileButton
   },
 
-  data(){
-    return{
+  data() {
+    return {
       seen: true
-    }
+    };
   }
 };
 </script>
- <!--    <div class="row">
-                    <div class="col-md-12">
-                        <ListFiles/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <TestInformation/>
-                    </div>
-        </div>-->x

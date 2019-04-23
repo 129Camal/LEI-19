@@ -24,8 +24,12 @@
             <InfoUser v-on:edit-profile="swap"/>
           </div>
           <div class="col-lg-8 col-md-7">
-            <div v-if="current === null"> <UserBar/></div>
-            <div v-else><EditProfile/></div>
+            <div v-if="current === null">
+              <UserBar/>
+            </div>
+            <div v-else>
+              <EditProfile/>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +68,7 @@ export default {
 </script>
 
 <style scoped>
-.active a::after{
+.active a::after {
   border-bottom: 2px solid #68b3c8;
   bottom: 4px;
   content: " ";
