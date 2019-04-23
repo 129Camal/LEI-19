@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
@@ -16,6 +17,7 @@
     "express": "~4.16.0",
     "http-errors": "^1.6.3",
     "js_mzml": "^1.1.5",
+    "jsonwebtoken": "^8.5.1",
     "matrix-js": "^1.4.0",
     "mongodb": "^3.2.3",
     "mongoose": "^5.5.1",

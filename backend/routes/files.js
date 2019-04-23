@@ -9,6 +9,9 @@ const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 const File = require('../controllers/file')
 var url = require('url');
 
+
+const { verifyToken } = require('../config/token');
+
 //Set storage engine
 const storage = multer.diskStorage({
   destination: './RAW/',
@@ -89,26 +92,22 @@ function getContent(filename, req, callback){
       .catch(err => {
         callback({status: response})
       });
-    
-    /*
-    var output = []
-
-    var result = {
-      scans: numScans,
-      intensity: sumIntensity
-    }
-    output.push(result)
-    */
   });
 }
 
 //---------------------------------------  Routes -------------------------------------------//
 
-router.get('/', (req, res) =>{
-  res.render('file')
+router.get('/', verifyToken, (req, res) =>{
+  jwt.verify(req.token, publicKey, {algorithm: 'RS256'}, (err, authData)=>{
+    if(err){
+      res.sendStatus(403)
+    } else {
+      res.render('file')
+    }
+  })
 })
 
-router.get('/graph/sumMass', (req, res)=>{
+router.get('/graph/sumMass', verifyToken, (req, res)=>{
   var file = url.parse(req.url, true).query.file
 
   File.getIntMass(file)
@@ -122,7 +121,8 @@ router.get('/graph/sumMass', (req, res)=>{
       .catch( err => res.status(404).jsonp({status:"FILE NOT AVAILABLE"}))
 })
 
-router.get('/graph/sumIntensity', (req, res)=>{
+
+router.get('/graph/sumIntensity', verifyToken, (req, res)=>{
   var file = url.parse(req.url, true).query.file
   console.log(file)
   File.getSumIntensity(file)
@@ -136,7 +136,7 @@ router.get('/graph/sumIntensity', (req, res)=>{
       .catch( err => res.status(404).jsonp({status:"FILE NOT AVAILABLE"}))
 })
 
-router.get('/info', (req, res)=>{
+router.get('/info', verifyToken, (req, res)=>{
   var file = url.parse(req.url, true).query.file
   File.getInfoFile(file)
     .then(resp => {
@@ -145,13 +145,13 @@ router.get('/info', (req, res)=>{
     .catch( err => res.status(404).jsonp({status:"FILE NOT AVAILABLE"}))
 })
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', verifyToken, (req, res) => {
   File.deleteFile(req.params.id)
       .then(resp => res.status(200).send({status:"OK"}))
       .catch(err => res.status(404).send({status:"ERROR DELETING THE FILE"}))
 });
 
-router.post('/import', (req, res) => {
+router.post('/import', verifyToken, (req, res) => {
     upload(req, res, (errupl) =>{
       if(!errupl){
         let fileRaw = req.files[0].originalname.replace(/(\s)+/g, '\\ ');
@@ -189,7 +189,7 @@ router.post('/import', (req, res) => {
     
 })
 
-router.get('/csv/:id', (req, res) =>{
+router.get('/csv/:id', verifyToken, (req, res) =>{
 
   fs.readFile(__dirname + "/../csv/" + req.params.id + '.csv', (error, data) =>{
     if(!error){
@@ -203,7 +203,7 @@ router.get('/csv/:id', (req, res) =>{
   })
 })
 
-router.get('/all', (req, res) => {
+router.get('/all', verifyToken,(req, res) => {
   File.allFiles()
       .then(resp => {
         res.status(200).jsonp(resp)
