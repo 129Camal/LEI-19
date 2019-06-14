@@ -1,8 +1,8 @@
 var File = require('../models/file')
 
-module.exports.allFiles = ()=>{
+module.exports.allFiles = (id)=>{
     return File
-        .find({},{sumIntensities:0, sumIntensitiesPerMass:0})
+        .find({idUser: id},{sumIntensities:0, sumIntensitiesPerMass:0})
         .exec()
 }
 

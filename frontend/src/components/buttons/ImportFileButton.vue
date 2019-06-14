@@ -1,11 +1,13 @@
 <template>
-    <router-link to="/dashboards/import" tag="button" class="btn btn-outline-info">
-      <span>Import File</span>
-    </router-link>
+  <v-flex class="text-xs-right ">
+    <v-btn class="btn btn-info btn-fill btn-wd" to="/dashboards/import">
+      <v-icon>add</v-icon>
+    </v-btn>
+  </v-flex>
 </template>
 
 <script>
 export default {
-    name: 'importFileButton',
-}
+  name: "ImportFileButton"
+};
 </script>

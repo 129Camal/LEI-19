@@ -69,27 +69,36 @@ function getContent(filename, req, callback){
 
     var response = "ERROR CREATING CSV"
 
-    let csvWriter = createCsvWriter({
-      header: header,
-      path: './csv/' + filename + '.csv'
-    })
+    if(!fs.existsSync('./csv/' + req.userId)){
+      fs.mkdirSync('./csv/' + req.userId)
+    }
 
     let file = {
       name: filename,
       dateTest: req.body.dateTest,
       description: req.body.description,
       nScans: Object.keys(mzml.spectra).length,
+      idUser: req.userId,
       sumIntensities: sumIntensity,
       sumIntensitiesPerMass: sumMass
     }
     
+    let csvWriter = createCsvWriter({
+      header: header,
+      path: './csv/'+ req.userId+ '/' + filename + '.csv'
+    })
+    
+    console.log("TOKEN: " + req.userId)
     csvWriter.writeRecords(matrix)
       .then(() => {
         response = "OK"
         File.addFile(file)
+        matrix = null
+        console.log("MATRIX OK")
         callback({status: response})
       })
       .catch(err => {
+        console.log("MATRIX OK ARDEU" + err)
         callback({status: response})
       });
   });
@@ -97,7 +106,7 @@ function getContent(filename, req, callback){
 
 //---------------------------------------  Routes -------------------------------------------//
 
-router.get('/', verifyToken, (req, res) =>{
+router.get('/', /*verifyToken,*/ (req, res) =>{
       res.status(200).render('file')
     
 })
@@ -148,7 +157,9 @@ router.delete('/delete/:id', verifyToken, (req, res) => {
 
 router.post('/import', verifyToken, (req, res) => {
     upload(req, res, (errupl) =>{
+      
       if(!errupl){
+        console.log(req.body)
         let fileRaw = req.files[0].originalname.replace(/(\s)+/g, '\\ ');
         let fileMzml = fileRaw.split('.')[0] + '.mzML'
       
@@ -186,7 +197,7 @@ router.post('/import', verifyToken, (req, res) => {
 
 router.get('/csv/:id', verifyToken, (req, res) =>{
 
-  fs.readFile(__dirname + "/../csv/" + req.params.id + '.csv', (error, data) =>{
+  fs.readFile(__dirname + "/../csv/" + req.userId + "/" + req.params.id + '.csv', (error, data) =>{
     if(!error){
       res.setHeader('Content-disposition', 'attachment; filename='+ req.params.id +'.csv');
       res.set('Content-Type', 'text/csv');
@@ -198,8 +209,8 @@ router.get('/csv/:id', verifyToken, (req, res) =>{
   })
 })
 
-router.get('/all', verifyToken,(req, res) => {
-  File.allFiles()
+router.get('/all', verifyToken, (req, res) => {
+  File.allFiles(req.userId)
       .then(resp => {
         res.status(200).jsonp(resp)
       })

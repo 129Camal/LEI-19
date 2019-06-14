@@ -12,13 +12,14 @@ module.exports = {
 			
 			jwt.verify(req.token, publicKey, {algorithm: 'RS256'}, (err, authData)=>{
 				if(err){
-				  res.status(403).jsonp({status:"ERROR INVALID TOKEN"})
+				  res.status(200).jsonp({status:"ERROR INVALID TOKEN"})
 				} else {
+					req.userId = authData.id
 					next()
 				}
 			  })
 	    } else {
-		    res.status(403).jsonp({status:"ACESS DENIED"})
+		    res.status(200).jsonp({status:"ACESS DENIED"})
 	    }
     }
 };

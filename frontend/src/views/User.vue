@@ -8,9 +8,7 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li v-on:mouseover="isActive = !isActive" v-bind:class="{'active': isActive}">
-              <a href="#">
-                <p>Logout</p>
-              </a>
+              <Logout/>
             </li>
           </ul>
         </div>
@@ -41,13 +39,15 @@
 import InfoUser from "../components/user/InfoUser";
 import EditProfile from "../components/user/EditProfile";
 import UserBar from "../components/user/UserBar.vue";
+import Logout from "../components/buttons/Logout.vue";
 
 export default {
   name: "user",
   components: {
     InfoUser,
     EditProfile,
-    UserBar
+    UserBar,
+    Logout
   },
   data() {
     return {

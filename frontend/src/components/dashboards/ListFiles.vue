@@ -1,60 +1,65 @@
 <template>
-  <div class="card col-md-5">
-    <div class="header">
-      <h4 class="title">Imported Data</h4>
-    </div>
-    <div class="content table-responsive table-full-width">
-      <table class="table table-striped">
-        <thead>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Test Date</th>
-          <th>File Name</th>
-          <th>Import Date</th>
-        </thead>
-        <tbody>
-          <tr v-bind:key="file.id" v-for="file in files">
-            <td>{{file.id}}</td>
-            <td>{{file.name}}</td>
-            <td>{{file.testDate}}</td>
-            <td>{{file.fileName}}</td>
-            <td>{{file.importDate}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+  
+    <v-data-table 
+      :headers="headers" 
+      :items="files" 
+      class="elevation-1"
+    >
+      <template v-slot:no-data>
+        <v-alert :value="true" color="error" icon="warning">
+          Not Available Files!
+        </v-alert>
+      </template>
+
+      <template slot="items" slot-scope="props">
+        <tr @click="rowClicked(props.item)"> 
+          <td class="text-xs-center">{{ props.item.name }}</td>
+          <td class="text-xs-center">{{ props.item.dateTest.split('T')[0] }}</td>
+          <td class="text-xs-center">{{ props.item.description }}</td>
+          <td class="text-xs-center">{{ props.item.dateInput.split('T')[0] }}</td>
+        </tr>
+      </template>
+    </v-data-table>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import axios from "axios";
+
 export default {
   name: "listFiles",
+  computed: mapGetters(["getToken"]),
+  methods: {
+    rowClicked(item) {
+      this.$router.push("/file/" + item._id);
+    }
+  },
   data() {
     return {
-      files: [
-        {
-          id: 1,
-          name: "Scan 1",
-          testDate: "21-01-1996",
-          fileName: "teste1.RAW",
-          importDate: "8-3-2019"
-        },
-        {
-          id: 2,
-          name: "Scan 2",
-          testDate: "12-12-1998",
-          fileName: "teste2.RAW",
-          importDate: "10-3-2019"
-        },
-        {
-          id: 3,
-          name: "Scan 3",
-          testDate: "09-08-2017",
-          fileName: "teste3.RAW",
-          importDate: "9-3-2020"
-        }
+      files: [],
+      headers: [
+        { text: "Name", value: "name", align: "center" },
+        { text: "Test Date", value: "dateTest", align: "center" },
+        { text: "Description", value: "description", align: "center" },
+        { text: "Input Date", value: "dateInput", align: "center" }
       ]
     };
+  },
+  mounted: function() {
+    try {
+      axios
+        .get("http://localhost:3001/file/all", {
+          headers: { Authorization: "Bearer " + this.getToken }
+        })
+        .then(res => {
+          this.files = res.data;
+        })
+        // eslint-disable-next-line
+        .catch(err => console.log(err));
+    
+    } catch (e) {
+      return e;
+    }
   }
 };
 </script>

@@ -5,17 +5,34 @@ import User from './views/User.vue'
 import Dashboards from './views/Dashboards.vue'
 import FileImport from './components/dashboards/FileImport.vue'
 import ListFiles from './components/dashboards/ListFiles.vue'
-import TestInformation from './components/dashboards/TestInformation.vue'
-import ImportFileButton from './components/buttons/ImportFileButton'
+import Register from './components/auth/Register'
+import store from './store/modules/token';
+import ImportFileButton from './components/buttons/ImportFileButton.vue'
+import File from './views/File.vue'
 
 Vue.use(Router)
 
+const ifAuthenticated = (to, from, next) => {
+  if (store.state.token != null) {
+    next()
+    return
+  }
+  next('/')
+}
+
 export default new Router({
+  mode: 'history',
+  base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: Register
     },
     {
       path: '/user',
@@ -26,8 +43,10 @@ export default new Router({
           path: 'datasets',
           component: ListFiles
         }
-      ] // acho que vai ser preciso meter merdas aqui
+      ],
+      beforeEnter: ifAuthenticated
     },
+
     {
       path: '/dashboards',
       name: 'dashboards',
@@ -41,10 +60,27 @@ export default new Router({
           path: '',
           components: {
             default: ListFiles,
-            //helper: TestInformation
+            helper: ImportFileButton
           },
         }
-      ]
+      ],
+      beforeEnter: ifAuthenticated
     },
+    {
+      path: '/file/:id',
+      name: 'file',
+      component: File,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: '*',
+      name: 'other',
+      component: Home
+    }
   ]
 })
+
+
+
+
+

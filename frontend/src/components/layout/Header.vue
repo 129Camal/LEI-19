@@ -16,12 +16,12 @@
                         <p>Dashboards</p>
                     </router-link>
                 </li>
-                <li v-on:click="isActive=2" v-bind:class="{'active': isActive===2}">
+                <!-- <li v-on:click="isActive=2" v-bind:class="{'active': isActive===2}">
                     <router-link to="/groups">
                         <i class="ti-layout-grid3"></i>
                         <p>Work Groups</p>
                     </router-link>            
-                </li>
+                </li>  -->
                 <li v-on:click="isActive=3" v-bind:class="{'active': isActive===3}">    
                     <router-link to="/user">
                         <i class="ti-user"></i>

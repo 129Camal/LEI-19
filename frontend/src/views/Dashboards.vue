@@ -5,18 +5,11 @@
         <div class="navbar-header">
           <p class="navbar-brand">Dashboards</p>
         </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <div v-show="seen" v-on:click="seen = !seen">
-              <ImportFileButton/>
-            </div>
-          </ul>
-        </div>
       </div>
     </nav>
     <div class="content">
       <div class="container-fluid">
-        <router-view v-on:appear-button="seen=true"></router-view>
+        <router-view></router-view>
         <router-view name="helper"></router-view>
       </div>
     </div>
@@ -32,7 +25,10 @@ import TestInformation from "../components/dashboards/TestInformation.vue";
 export default {
   name: "dashboards",
   components: {
-    ImportFileButton
+    ImportFileButton,
+    FileImport,
+    ListFiles,
+    TestInformation
   },
 
   data() {

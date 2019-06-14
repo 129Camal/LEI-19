@@ -7,6 +7,7 @@ var FileSchema = new Schema({
     dateTest: Date,
     description: String,
     nScans: Number,
+    idUser: String,
     sumIntensities: [mongoose.Decimal128],
     sumIntensitiesPerMass: [mongoose.Decimal128]
 }, {

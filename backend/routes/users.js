@@ -22,7 +22,7 @@ router.post('/login', (req, res, next) =>{
 	User.getUser(req.body.email)
 		.then(user =>{
 			if(!user){
-				res.status(404).jsonp({status:"ERROR EMAIL DOESNT EXIST"})
+				res.status(200).jsonp({status:"ERROR EMAIL DOESNT EXIST"})
 			} else {
 				
 				bcrypt.compare(req.body.password, user.password, (err, isMatch) =>{
@@ -37,7 +37,7 @@ router.post('/login', (req, res, next) =>{
 							})	
 							
 						} else {
-							res.status(404).jsonp({status:"ERROR PASSWORD INVALID"})
+							res.status(200).jsonp({status:"ERROR PASSWORD INVALID"})
 						}
 					}
 				
