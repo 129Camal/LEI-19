@@ -2,7 +2,7 @@ var User = require('../models/user')
 
 module.exports.allUsers = ()=>{
         return User
-        .find()
+        .find({}, {password:0})
         .sort({name:-1})
         .exec()
 }
@@ -15,6 +15,11 @@ module.exports.getUser = email => {
 
 }
 
+module.exports.deleteUser = id =>{
+    return User
+        .findOneAndDelete({_id: id})
+        .exec()
+}
 
 module.exports.addUser = user =>{
     return User.create(user)

@@ -39,7 +39,7 @@ function getContent(filename, req) {
 
     var spectra = mzml.retrieve(options, () => {
       if (mzml != undefined) {
-        
+
         let matrix = []
         let sumIntensity = new Array(Object.keys(mzml.spectra).length).fill(0);
 
@@ -163,8 +163,7 @@ router.get('/info', verifyToken, (req, res) => {
 router.delete('/delete/:id/:name', verifyToken, (req, res) => {
   File.deleteFile(req.params.id)
     .then(resp => {
-      
-      exec('rm ' + __dirname + '/../RAW/'+ req.userId + '/' + req.params.name + '.RAW');
+      exec('rm ' + __dirname + '/../RAW/' + req.userId + '/' + req.params.name + '.RAW');
       exec('rm ' + __dirname + '/../csv/' + req.userId + '/' + req.params.name + '.csv');
       res.status(200).jsonp({ status: "OK" })
     })
@@ -197,13 +196,13 @@ router.post('/import', verifyToken, (req, res) => {
 
         testscript.on('exit', () => {
           if (error == 0) {
-            
+
             getContent(fileRaw.split('.')[0], req)
               .then(response => {
                 if (!fs.existsSync('./RAW/' + req.userId)) {
                   fs.mkdirSync('./RAW/' + req.userId)
                 }
-                exec('mv ' + __dirname + '/../RAW/' + fileRaw + " " + __dirname + '/../RAW/' + req.userId );
+                exec('mv ' + __dirname + '/../RAW/' + fileRaw + " " + __dirname + '/../RAW/' + req.userId);
                 exec('rm ' + __dirname + '/../RAW/' + fileMzml);
                 res.status(200).jsonp(response)
               })
@@ -251,6 +250,25 @@ router.get('/all', verifyToken, (req, res) => {
       res.status(200).jsonp(resp)
     })
     .catch(err => res.status(404).jsonp({ status: "FILES NOT AVAILABLE" }))
+})
+
+router.get('/plot/:id', verifyToken, (req, res) => {
+  fs.readFile(__dirname + "/../csv/" + req.userId + "/" + req.params.id + '.csv', (error, data) => {
+    if (!error) {
+      breaked = data.toString().split('\n')
+      rows = []
+
+      for (let i = 0; i < breaked.length; i++) {
+        rows.push(JSON.parse("[" + breaked[i] + "]"))
+      }
+
+      res.status(200).jsonp({ plot: rows})
+      rows = []
+    }
+    else {
+      res.status(404).jsonp({ status: "ERROR FILE NOT FOUND" })
+    }
+  })
 })
 
 

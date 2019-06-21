@@ -6,6 +6,12 @@ module.exports.allFiles = (id)=>{
         .exec()
 }
 
+module.exports.adminAllFiles = ()=>{
+    return File
+        .find({},{sumIntensities:0, sumIntensitiesPerMass:0})
+        .exec()
+}
+
 module.exports.addFile = file =>{
     return File.create(file)
 }
