@@ -160,9 +160,14 @@ router.get('/info', verifyToken, (req, res) => {
     .catch(err => res.status(404).jsonp({ status: "FILE NOT AVAILABLE" }))
 })
 
-router.delete('/delete/:id', verifyToken, (req, res) => {
+router.delete('/delete/:id/:name', verifyToken, (req, res) => {
   File.deleteFile(req.params.id)
-    .then(resp => res.status(200).jsonp({ status: "OK" }))
+    .then(resp => {
+      
+      exec('rm ' + __dirname + '/../RAW/'+ req.userId + '/' + req.params.name + '.RAW');
+      exec('rm ' + __dirname + '/../csv/' + req.userId + '/' + req.params.name + '.csv');
+      res.status(200).jsonp({ status: "OK" })
+    })
     .catch(err => res.status(404).jsonp({ status: "ERROR DELETING THE FILE" }))
 });
 
@@ -192,9 +197,13 @@ router.post('/import', verifyToken, (req, res) => {
 
         testscript.on('exit', () => {
           if (error == 0) {
-            console.log("Vou buscar o content!")
+            
             getContent(fileRaw.split('.')[0], req)
               .then(response => {
+                if (!fs.existsSync('./RAW/' + req.userId)) {
+                  fs.mkdirSync('./RAW/' + req.userId)
+                }
+                exec('mv ' + __dirname + '/../RAW/' + fileRaw + " " + __dirname + '/../RAW/' + req.userId );
                 exec('rm ' + __dirname + '/../RAW/' + fileMzml);
                 res.status(200).jsonp(response)
               })
@@ -214,6 +223,20 @@ router.get('/csv/:id', verifyToken, (req, res) => {
     if (!error) {
       res.setHeader('Content-disposition', 'attachment; filename=' + req.params.id + '.csv');
       res.set('Content-Type', 'text/csv');
+      res.status(200).send(data)
+    } else {
+      res.status(404).send({ status: "ERROR FILE NOT FOUND" })
+    }
+
+  })
+})
+
+router.get('/raw/:id', verifyToken, (req, res) => {
+
+  fs.readFile(__dirname + "/../raw/" + req.userId + "/" + req.params.id + '.RAW', (error, data) => {
+    if (!error) {
+      res.setHeader('Content-disposition', 'attachment; filename=' + req.params.id + '.RAW');
+      res.set('Content-Type', 'text/*');
       res.status(200).send(data)
     } else {
       res.status(404).send({ status: "ERROR FILE NOT FOUND" })

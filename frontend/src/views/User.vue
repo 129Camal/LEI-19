@@ -5,13 +5,13 @@
         <div class="navbar-header">
           <p class="navbar-brand">User Profile</p>
         </div>
-        <div class="collapse navbar-collapse">
+        <!-- <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav navbar-right">
             <li v-on:mouseover="isActive = !isActive" v-bind:class="{'active': isActive}">
               <Logout/>
             </li>
           </ul>
-        </div>
+        </div> -->
       </div>
     </nav>
 
@@ -39,15 +39,14 @@
 import InfoUser from "../components/user/InfoUser";
 import EditProfile from "../components/user/EditProfile";
 import UserBar from "../components/user/UserBar.vue";
-import Logout from "../components/buttons/Logout.vue";
+
 
 export default {
   name: "user",
   components: {
     InfoUser,
     EditProfile,
-    UserBar,
-    Logout
+    UserBar
   },
   data() {
     return {
