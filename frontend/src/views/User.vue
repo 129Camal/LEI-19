@@ -1,78 +1,122 @@
 <template>
-  <div class="main-panel">
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <p class="navbar-brand">User Profile</p>
-        </div>
-        <!-- <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-            <li v-on:mouseover="isActive = !isActive" v-bind:class="{'active': isActive}">
-              <Logout/>
-            </li>
-          </ul>
-        </div> -->
-      </div>
-    </nav>
-
-    <div class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-4 col-md-5">
-            <InfoUser v-on:edit-profile="swap"/>
-          </div>
-          <div class="col-lg-8 col-md-7">
-            <div v-if="current === null">
-              <UserBar/>
-            </div>
-            <div v-else>
-              <EditProfile/>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <v-container fluid>
+    <v-layout>
+      <v-flex>
+        <v-alert :value="alertError" color="amber darken-1" icon="priority_high">
+          <b>{{this.msgerror}}</b>
+        </v-alert>
+        <v-alert :value="alertSucess" color="green darken-1">
+          <b>{{this.msgSucess}}</b>
+        </v-alert>
+        <v-card>
+          <v-toolbar color="dark" dark>
+            <v-toolbar-title>Your Information</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+          <v-card-text>
+            <v-text-field v-model="form.name" label="Name"></v-text-field>
+            <v-text-field v-model="form.email" label="Email Address"></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="cyan lighten-5" @click.native="update">
+              <v-icon left dark>check</v-icon>Save Changes
+            </v-btn>
+            <Logout/>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
-import InfoUser from "../components/user/InfoUser";
-import EditProfile from "../components/user/EditProfile";
-import UserBar from "../components/user/UserBar.vue";
-
+import Logout from "../components/buttons/Logout";
+import { mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
-  name: "user",
+  name: "userProfile",
+  computed: mapGetters(["getToken"]),
   components: {
-    InfoUser,
-    EditProfile,
-    UserBar
+    Logout
   },
   data() {
     return {
-      current: null,
-      isActive: false
+      alertError: false,
+      msgerror: "",
+      alertSucess: false,
+      msgSucess: "",
+      form: {
+        name: "",
+        email: "",
+        real_name: "",
+        real_email: ""
+      }
     };
   },
   methods: {
-    swap(component) {
-      switch (component) {
-        case "EditProfile":
-          this.current = EditProfile;
-          break;
+    update() {
+      if (
+        this.form.name == this.form.real_name &&
+        this.form.email == this.form.real_email
+      ) {
+        this.msgerror = "Any changes made!";
+        this.alertError = true;
+      } else {
+        axios
+          .post(
+            "http://localhost:3001/users/update",
+            {
+              name: this.form.name,
+              email: this.form.email
+            },
+            { headers: { authorization: "Bearer " + this.getToken } }
+          )
+          .then(response => {
+            switch (response.data.status) {
+              case "OK":
+                this.msgSucess = "Changes applied with sucess!"
+                this.alertSucess = true;
+                this.$router.push("/user");
+                break;
+              case "ERROR EMAIL ALREADY IN USE":
+                this.alertError = true;
+                this.msgerror = "Email already in use!";
+                this.$router.push("/user");
+                break;
+              default:
+                this.msgerror = "System Error! Try Later.";
+                this.alertError = true;
+                this.$router.push("/user");
+            }
+          })
+          .catch(error => {
+            // eslint-disable-next-line
+            console.log(error);
+          });
       }
+    }
+  },
+  mounted: function() {
+    try {
+      axios
+        .get("http://localhost:3001/users", {
+          headers: { authorization: "Bearer " + this.getToken }
+        })
+        .then(res => {
+          this.form.name = res.data.name;
+          this.form.email = res.data.email;
+          this.form.real_name = res.data.name;
+          this.form.real_email = res.data.email;
+        })
+        .catch(err => {
+          // eslint-disable-next-line
+          console.log(err);
+        });
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log(e);
     }
   }
 };
 </script>
-
-<style scoped>
-.active a::after {
-  border-bottom: 2px solid #68b3c8;
-  bottom: 4px;
-  content: " ";
-  left: 7px;
-  position: absolute;
-  right: 7px;
-}
-</style>

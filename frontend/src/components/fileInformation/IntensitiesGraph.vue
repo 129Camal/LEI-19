@@ -1,11 +1,10 @@
 <template>
-  <v-container fluid grid-list-md>
+  <v-container fluid grid-list-md v-if="chartData[0]">
     <v-card>
-      <v-card-title>
-        <h4>
-          <i>Intensity per Scan</i>
-        </h4>
-      </v-card-title>
+      <v-toolbar color="blue darken-4" dark>
+        <v-toolbar-title>Intensity per Scan</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
       <GChart type="LineChart" :data="chartData" :options="chartOptions"/>
     </v-card>
   </v-container>
@@ -28,7 +27,14 @@ export default {
     chartOptions: {
       chart: {
         title: "Graph Sum of Intensities per Scan"
-      }
+      },
+      explorer: {
+        actions: ["dragToZoom", "rightClickToReset"],
+        axis: "horizontal",
+        keepInBounds: true,
+        maxZoomIn: 10.0
+      },
+      theme: 'material'
     }
   }),
   mounted: function() {

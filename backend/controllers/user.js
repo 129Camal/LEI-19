@@ -15,6 +15,12 @@ module.exports.getUser = email => {
 
 }
 
+module.exports.getUserInfo = id => {
+    return User
+        .findOne({_id : id}, {_id:0, password:0, userType:0})
+        .exec()
+
+}
 module.exports.deleteUser = id =>{
     return User
         .findOneAndDelete({_id: id})
@@ -25,8 +31,8 @@ module.exports.addUser = user =>{
     return User.create(user)
 }
 
-module.exports.changeUser = (req,res) =>{
+module.exports.changeUser = (id, name, email) =>{
 
-    return User.update({_id:req.params.id},{name:req.body.name, email:req.body.email, password:req.body.password, userType: req.body.userType})
+    return User.updateOne({_id: id},{$set: {name: name, email: email}})
         
 }

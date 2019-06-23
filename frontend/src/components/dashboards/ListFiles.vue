@@ -1,18 +1,22 @@
 <template>
-  
-    <v-data-table 
-      :headers="headers" 
-      :items="files" 
-      class="elevation-1"
-    >
+  <v-flex md12>
+    <v-text-field
+      v-model="search"
+      append-icon="search"
+      label="Search File"
+      single-line
+    ></v-text-field>
+    <v-toolbar color="cyan lighten-5">
+      <v-toolbar-title>Imported Files</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-toolbar>
+    <v-data-table :headers="headers" :items="files" class="elevation-1" :search="search">
       <template v-slot:no-data>
-        <v-alert :value="true" color="error" icon="warning">
-          Not Available Files!
-        </v-alert>
+        <v-alert :value="true" color="error" icon="warning">Not Available Files!</v-alert>
       </template>
 
       <template slot="items" slot-scope="props">
-        <tr @click="rowClicked(props.item)"> 
+        <tr @click="rowClicked(props.item)">
           <td class="text-xs-center">{{ props.item.name }}</td>
           <td class="text-xs-center">{{ props.item.dateTest.split('T')[0] }}</td>
           <td class="text-xs-center">{{ props.item.description }}</td>
@@ -20,6 +24,7 @@
         </tr>
       </template>
     </v-data-table>
+  </v-flex>
 </template>
 
 <script>
@@ -37,11 +42,12 @@ export default {
   data() {
     return {
       files: [],
+      search: "",
       headers: [
-        { text: "Name", value: "name", align: "center" },
-        { text: "Test Date", value: "dateTest", align: "center" },
-        { text: "Description", value: "description", align: "center" },
-        { text: "Input Date", value: "dateInput", align: "center" }
+        { text: "Name", value: "name", align: "center"},
+        { text: "Test Date", value: "dateTest", align: "center"},
+        { text: "Description", value: "description", align: "center", sortable: false },
+        { text: "Input Date", value: "dateInput", align: "center"}
       ]
     };
   },
@@ -56,7 +62,6 @@ export default {
         })
         // eslint-disable-next-line
         .catch(err => console.log(err));
-    
     } catch (e) {
       return e;
     }

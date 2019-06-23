@@ -1,65 +1,57 @@
 <template>
+  <v-flex md12>
+    <h3>
+      <b>Import RAW File</b>
+    </h3>
+    <form>
+      <v-text-field
+        v-model="description"
+        name="description"
+        label="Description"
+        placeholder
+        outline
+        required
+      ></v-text-field>
 
-  <div class="card">
-    <div class="header">
-      <h4 class="title">
-        Import
-        <i>RAW</i> File
-      </h4>
-    </div>
-    <div class="content">
-      <form>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Description</label>
-              <input
-                v-model="description"
-                type="text"
-                name="description"
-                class="form-control border-input"
-                placeholder
-              >
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Test Date</label>
-              <input
-                v-model="date"
-                type="date"
-                name="dateTest"
-                class="form-control border-input"
-                placeholder
-                required
-              >
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>File</label>
-              <input
-                type="file"
-                class="border-input"
-                placeholder
-                required
-                v-on:change="handleFileUpload"
-              >
-            </div>
-          </div>
-        </div>
-        <div class="text-center">
-          <input
-            @click="submitFile"
-            class="btn btn-info btn-fill btn-wd"
-            value="Import File"
-          >
-        </div>
-      </form>
-    </div>
-  </div>
+      <v-menu
+        ref="menu"
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        :return-value.sync="date"
+        lazy
+        transition="scale-transition"
+        offset-y
+        full-width
+        min-width="290px"
+      >
+        <template v-slot:activator="{ on }">
+          <v-text-field
+            v-model="date"
+            name="dateTest"
+            label="Exam Date"
+            prepend-icon="event"
+            readonly
+            v-on="on"
+            outline
+            required
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="date" no-title scrollable>
+          <v-spacer></v-spacer>
+          <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
+          <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+        </v-date-picker>
+      </v-menu>
+      <div class="form-group">
+        <input type="file" class="border-input" placeholder required v-on:change="handleFileUpload">
+      </div>
+
+      <div class="text-center">
+        <input @click="submitFile" class="btn btn-info btn-fill btn-wd" value="Import File">
+      </div>
+    </form>
+  </v-flex>
 </template>
 
 <script>
@@ -73,7 +65,8 @@ export default {
     return {
       selectedFile: null,
       description: "",
-      date: ""
+      date: "",
+      menu: false
     };
   },
   methods: {
@@ -81,26 +74,29 @@ export default {
       this.selectedFile = event.target.files[0];
     },
     submitFile() {
+      console.log(this.date);
+      console.log(this.description);
+      console.log(this.selectedFile.name);
       let formData = new FormData();
-      
-      formData.append("file", this.selectedFile, this.selectedFile.name);
-      formData.append("dateTest", this.date)
-      formData.append("description", this.description)
 
-      axios.post("http://localhost:3001/file/import", formData, {
+      formData.append("file", this.selectedFile, this.selectedFile.name);
+      formData.append("dateTest", this.date);
+      formData.append("description", this.description);
+
+      axios
+        .post("http://localhost:3001/file/import", formData, {
           headers: {
             authorization: "Bearer " + this.getToken,
             "Content-Type": "multipart/form-data"
           }
         })
         .then(res => {
-          console.log(res.data)
-          if(res.data.status == "OK"){
-            this.$router.push("/dashboards")
+          console.log(res.data);
+          if (res.data.status == "OK") {
+            this.$router.push("/dashboards");
           }
         })
         .catch(erro => {
-          console.log("ERRO AXIOS")
           console.log(erro);
         });
     }

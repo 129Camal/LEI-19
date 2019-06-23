@@ -17,7 +17,7 @@ const ifAuthenticated = (to, from, next) => {
     next()
     return
   }
-  next('/')
+  next('/login')
 }
 
 export default new Router({
@@ -38,12 +38,6 @@ export default new Router({
       path: '/user',
       name: 'user',
       component: User,
-      children: [
-        {
-          path: 'datasets',
-          component: ListFiles
-        }
-      ],
       beforeEnter: ifAuthenticated
     },
 
