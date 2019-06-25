@@ -31,7 +31,7 @@
 
 <script>
 import Logout from "../components/buttons/Logout";
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 
 export default {
@@ -55,6 +55,7 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["removeToken"]),
     update() {
       if (
         this.form.name == this.form.real_name &&
@@ -63,6 +64,8 @@ export default {
         this.msgerror = "Any changes made!";
         this.alertError = true;
       } else {
+        this.alertError = false;
+        this.alertError = false;
         axios
           .post(
             "http://localhost:3001/users/update",
@@ -75,7 +78,7 @@ export default {
           .then(response => {
             switch (response.data.status) {
               case "OK":
-                this.msgSucess = "Changes applied with sucess!"
+                this.msgSucess = "Changes applied with sucess!";
                 this.alertSucess = true;
                 this.$router.push("/user");
                 break;
@@ -85,8 +88,6 @@ export default {
                 this.$router.push("/user");
                 break;
               default:
-                this.msgerror = "System Error! Try Later.";
-                this.alertError = true;
                 this.$router.push("/user");
             }
           })
@@ -104,14 +105,19 @@ export default {
           headers: { authorization: "Bearer " + this.getToken }
         })
         .then(res => {
-          this.form.name = res.data.name;
-          this.form.email = res.data.email;
-          this.form.real_name = res.data.name;
-          this.form.real_email = res.data.email;
+          if (res.data.status) {
+            localStorage.removeItem("access_token");
+            this.removeToken();
+            this.$router.push("/");
+          } else {
+            this.form.name = res.data.name;
+            this.form.email = res.data.email;
+            this.form.real_name = res.data.name;
+            this.form.real_email = res.data.email;
+          }
         })
-        .catch(err => {
-          // eslint-disable-next-line
-          console.log(err);
+        .catch(() => {
+          this.$router.push("/notfound");
         });
     } catch (e) {
       // eslint-disable-next-line

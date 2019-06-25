@@ -28,13 +28,14 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 
 export default {
   name: "listFiles",
   computed: mapGetters(["getToken"]),
   methods: {
+    ...mapMutations(["removeToken"]),
     rowClicked(item) {
       this.$router.push("/file/" + item._id);
     }
@@ -58,10 +59,20 @@ export default {
           headers: { Authorization: "Bearer " + this.getToken }
         })
         .then(res => {
-          this.files = res.data;
+          if(res.data.status == "ERROR INVALID TOKEN"){
+            localStorage.removeItem('access_token')
+            this.removeToken()
+            this.$router.push('/')
+
+          } else {
+
+            this.files = res.data;
+
+          }
         })
-        // eslint-disable-next-line
-        .catch(err => console.log(err));
+        .catch(() => {
+          this.$router.push("/notfound");
+          });
     } catch (e) {
       return e;
     }

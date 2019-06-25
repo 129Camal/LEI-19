@@ -76,9 +76,8 @@ export default {
               this.$router.push("/register");
           }
         })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.log(error);
+        .catch(() => {
+          this.$router.push("/notfound");
         });
     }
   }

@@ -27,6 +27,7 @@
         <v-flex md6>
           <CSVButton v-bind:idFile="this.infoFile.name"/>
           <RAWButton v-bind:idFile="this.infoFile.name"/>
+          <v-btn color="red lighten-1" @click="remove()">Delete File</v-btn>
         </v-flex>
       </v-layout>
     </v-card>
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import CSVButton from "../buttons/DownloadCSV";
 import RAWButton from "../buttons/DownloadRAW";
@@ -50,6 +51,33 @@ export default {
   data: () => ({
     infoFile: {}
   }),
+  methods: {
+    ...mapMutations(["removeToken"]),
+    remove() {
+      axios
+        .delete(
+          "http://localhost:3001/file/delete/" +
+            this.idFile +
+            "/" +
+            this.infoFile.name,
+          {
+            headers: { authorization: "Bearer " + this.getToken }
+          }
+        )
+        .then(res => {
+          
+          if (res.data.status == "OK") {
+            
+            this.$router.push("/dashboards");
+          }
+        })
+
+        .catch(err => {
+          // eslint-disable-next-line
+          console.log(err);
+        });
+    }
+  },
   mounted: function() {
     try {
       axios
@@ -57,13 +85,20 @@ export default {
           headers: { authorization: "Bearer " + this.getToken }
         })
         .then(res => {
-          this.infoFile = res.data[0];
+          if (res.data.status) {
+            localStorage.removeItem("access_token");
+            this.removeToken();
+            this.$router.push("/");
+          } else {
+            this.infoFile = res.data[0];
+          }
         })
-        // eslint-disable-next-line
-        .catch(err => {
-          console.log(err);
+
+        .catch(() => {
+          this.$router.push("/notfound");
         });
     } catch (e) {
+      // eslint-disable-next-line
       console.log(e);
     }
   }

@@ -1,17 +1,19 @@
 <template>
-<main>
-    <Login/>
-</main>
+  <Login/>
 </template>
 
 <script>
-import Login from "../components/auth/Login.vue";
-
+import Login from "../components/auth/Login"
 export default {
-  name: 'home', 
+  name: "home",
   components: {
     Login
+  },
+  computed: {
+    loggedIn() {
+      return this.$store.getters.loggedIn;
+    }
   }
-}
+};
 </script>
 

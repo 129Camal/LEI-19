@@ -4,11 +4,10 @@ import Home from './views/Home.vue'
 import User from './views/User.vue'
 import Dashboards from './views/Dashboards.vue'
 import FileImport from './components/dashboards/FileImport.vue'
-import ListFiles from './components/dashboards/ListFiles.vue'
 import Register from './components/auth/Register'
 import store from './store/modules/token';
-import ImportFileButton from './components/buttons/ImportFileButton.vue'
 import File from './views/File.vue'
+import NotFound from './components/layout/NotFound'
 
 Vue.use(Router)
 
@@ -17,7 +16,7 @@ const ifAuthenticated = (to, from, next) => {
     next()
     return
   }
-  next('/login')
+  next('/')
 }
 
 export default new Router({
@@ -45,21 +44,16 @@ export default new Router({
       path: '/dashboards',
       name: 'dashboards',
       component: Dashboards,
-      children: [
-        {
-          path: 'import',
-          component: FileImport,
-        },
-        {
-          path: '',
-          components: {
-            default: ListFiles,
-            helper: ImportFileButton
-          },
-        }
-      ],
+      beforeEnter: ifAuthenticated
+    }
+    ,
+    {
+      path: '/dashboards/import',
+      name: 'import',
+      component: FileImport,
       beforeEnter: ifAuthenticated
     },
+
     {
       path: '/file/:id',
       name: 'file',
@@ -69,7 +63,7 @@ export default new Router({
     {
       path: '*',
       name: 'other',
-      component: Home
+      component: NotFound
     }
   ]
 })

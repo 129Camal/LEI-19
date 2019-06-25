@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import axios from "axios";
 import { GChart } from "vue-google-charts";
 
@@ -34,9 +34,12 @@ export default {
         keepInBounds: true,
         maxZoomIn: 10.0
       },
-      theme: 'material'
+      theme: "material"
     }
   }),
+  methods: {
+    ...mapMutations(["removeToken"])
+  },
   mounted: function() {
     try {
       axios
@@ -47,15 +50,24 @@ export default {
           }
         )
         .then(res => {
-          this.chartData.push(["Scan", "Intensity"]);
+          if (res.data.status) {
+            localStorage.removeItem("access_token");
+            this.removeToken();
+            this.$router.push("/");
+          } else {
+            this.chartData.push(["Scan", "Intensity"]);
 
-          for (let i = 0; i < res.data[0].nScans; i++) {
-            this.chartData.push([i + 1, res.data[0].sumIntensities[i]]);
+            for (let i = 0; i < res.data[0].nScans; i++) {
+              this.chartData.push([i + 1, res.data[0].sumIntensities[i]]);
+            }
           }
         })
         // eslint-disable-next-line
-        .catch(err => console.log(err));
+        .catch(() => {
+          this.$router.push("/notfound");
+        });
     } catch (e) {
+      // eslint-disable-next-line
       console.log(e);
     }
   }

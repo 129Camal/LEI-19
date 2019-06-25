@@ -11,10 +11,9 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations} from "vuex";
 import axios from "axios";
 import { GChart } from "vue-google-charts";
-import { randomBytes } from 'crypto';
 
 export default {
   name: "mass",
@@ -37,9 +36,12 @@ export default {
         keepInBounds: true,
         maxZoomIn: 10.0
       },
-      theme: 'material'
+      theme: "material"
     }
   }),
+  methods: {
+    ...mapMutations(["removeToken"])
+  },
   mounted: function() {
     try {
       axios
@@ -47,15 +49,26 @@ export default {
           headers: { authorization: "Bearer " + this.getToken }
         })
         .then(res => {
-          this.chartData.push(["Mass", "Intensity"]);
+          if (res.data.status) {
+            localStorage.removeItem("access_token");
+            this.removeToken()
+            this.$router.push("/");
+          } else {
+            this.chartData.push(["Mass", "Intensity"]);
 
-          for (let i = 0; i < 950; i++) {
-            this.chartData.push([i + 50, res.data[0].sumIntensitiesPerMass[i]]);
+            for (let i = 0; i < 950; i++) {
+              this.chartData.push([
+                i + 50,
+                res.data[0].sumIntensitiesPerMass[i]
+              ]);
+            }
           }
         })
-        // eslint-disable-next-line
-        .catch(err => console.log(err));
+        .catch(() => {
+          this.$router.push("/notfound");
+        });
     } catch (e) {
+      // eslint-disable-next-line
       console.log(e);
     }
   }

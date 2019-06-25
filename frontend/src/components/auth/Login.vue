@@ -62,6 +62,7 @@ export default {
           switch (response.data.status) {
             case "OK LOGGED":
               this.alertError = false;
+              localStorage.setItem("access_token", response.data.acessToken);
               this.setToken(response.data.acessToken);
               this.$router.push("/dashboards");
               break;
@@ -81,9 +82,8 @@ export default {
               this.$router.push("/");
           }
         })
-        .catch(error => {
-          // eslint-disable-next-line
-          console.log(error);
+        .catch(() => {
+          this.$router.push("/notfound");
         });
     }
   }

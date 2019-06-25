@@ -10,6 +10,7 @@ export default {
   methods: {
     ...mapMutations(["removeToken"]),
     doLogout() {
+      localStorage.removeItem('access_token')
       this.removeToken();
       this.$router.push("/dashboards");
     }

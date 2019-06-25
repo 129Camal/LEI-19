@@ -1,9 +1,12 @@
 const state = {
-    token: null
+    token: localStorage.getItem('access_token') || null
 }
 
 const getters = {
-    getToken: state => state.token
+    getToken: state => state.token,
+    loggedIn: state => {
+        return state.token !== null
+    }
 }
 
 const actions = {}
@@ -18,4 +21,4 @@ export default {
     getters,
     actions,
     mutations
-}
+} 

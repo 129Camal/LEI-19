@@ -24,7 +24,7 @@ router.get('/', verifyToken, (req, res, next) => {
 router.post('/update', verifyToken, (req, res, next) => {
 	User.getUser(req.body.email)
 		.then(resp => {
-			if (resp) {
+			if (resp && resp._id != req.userId) {
 				res.status(200).send({ status: "ERROR EMAIL ALREADY IN USE" })
 			} else {
 				User.changeUser(req.userId, req.body.name, req.body.email)
