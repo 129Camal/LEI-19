@@ -14,7 +14,7 @@
     "cors": "^2.8.5",
     "csv-writer": "^1.2.0",
     "debug": "~2.6.9",
-    "express": "~4.16.0",
+    "express": "~4.17.3",
     "http-errors": "^1.6.3",
     "js_mzml": "^1.1.5",
     "jsonwebtoken": "^8.5.1",
